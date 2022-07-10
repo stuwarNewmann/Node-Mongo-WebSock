@@ -1,5 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+
+const response = require('./network/response');
+
 const router = express.Router();
 
 let app = express();
@@ -7,35 +10,43 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(router);
 
-router.get('/', (req, res) => {
-    res.send('Hello desde el get!');
-});
-
-router.post('/', (req, res) =>{
-    res.send('Hello desde el post!');
-});
 
 router.get('/message', (req, res) => {
     console.log(req.headers);
     res.header({
         'Custom-Header': 'Hello World',
     }); 
-    res.send('Lista de mensajes: Ok');
+    if(req.query.error == 'ok')
+    {
+        response.error(req, res, 'Error message', 500);
+    }else
+    {
+        response.success(req, res, 'Lista de mensajes: Ok');        
+    }
     console.log('Message: List Ok.');
 });
 
 router.post('/message', (req, res) =>{
-    res.send('Lista de mensajes: Mensaje agregado correctamente.');
+    if(req.query.error == 'ok')
+    {
+        response.error(req, res, 'Error Simulado', 400);
+    }else
+    {
+        response.success(req, res, 'Lista de mensajes: Mensaje agregado correctamente.', 201);
+    }
     console.log('Message: Recived');
 });
 
 router.delete('/message', (req, res) =>{
     console.log(req.query);
     console.log(req.body);
-    res.status(201).send({
-        errror: '', 
-        message: 'Nombre eliminado correctamente.' + req.body.name
-    } );
+    if(req.query.error == 'ok')
+    {
+        response.error(req, res, 'Error Simulado', 400);
+    }else
+    {
+        response.success(req, res, 'Nombre eliminado correctamente: ' + req.body.name, 201);
+    }
     console.log('Message: Deleted');
 }); 
 
