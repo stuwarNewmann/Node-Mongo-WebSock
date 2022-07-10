@@ -54,5 +54,11 @@ router.delete('/message', (req, res) =>{
 //     res.send('Hello World');
 // });
 
+
+
+//Servir static files
+app.use('/app', express.static('public'));
+//Servir static files
+
 app.listen(3000);
 console.log('Server is running on port 3000');
