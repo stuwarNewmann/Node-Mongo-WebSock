@@ -42,7 +42,7 @@ router.delete('/message', (req, res) =>{
     console.log(req.body);
     if(req.query.error == 'ok')
     {
-        response.error(req, res, 'Error Simulado', 400);
+        response.error(req, res, 'Error inesperado', 400, 'Es solo una simulacion de error');
     }else
     {
         response.success(req, res, 'Nombre eliminado correctamente: ' + req.body.name, 201);
