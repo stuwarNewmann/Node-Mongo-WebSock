@@ -1,34 +1,28 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-
 const response = require('../../network/response');
+const controller = require('./controller');
 
 const router = express.Router();
 
 router.get('/', (req, res) => {
-    console.log(req.headers);
-    res.header({
-        'Custom-Header': 'Hello World',
-    }); 
-    if(req.query.error == 'ok')
-    {
-        response.error(req, res, 'Error message', 500);
-    }else
-    {
-        response.success(req, res, 'Lista de mensajes: Ok');        
-    }
-    console.log('Message: List Ok.');
+    controller.getMessage()
+        .then(messageList => {
+            response.success(req, res, messageList);
+        })
+        .catch(err => {
+            response.error(req, res, 'Error al obtener los mensajes', 500, err);
+        })
 });
 
 router.post('/', (req, res) =>{
-    if(req.query.error == 'ok')
-    {
-        response.error(req, res, 'Error Simulado', 400);
-    }else
-    {
-        response.success(req, res, 'Lista de mensajes: Mensaje agregado correctamente.', 201);
-    }
-    console.log('Message: Recived');
+    controller.addMessage(req.body.user, req.body.message)
+        .then((fullMessage) => {
+            response.success(req, res, fullMessage, 201);
+        })
+        .catch(() => {
+            response.error(req, res, 'Informacion Invalida', 400, 'Error en el controller');
+        })
 });
 
 router.delete('/', (req, res) =>{
